@@ -52,6 +52,32 @@ module nexys3 (/*AUTOARG*/
    reg [7:0]   inst_cnt;
    
    // ===========================================================================
+   // Asynchronous SEND
+   // ===========================================================================
+
+   assign asnd_i = btnS;
+   
+   
+   reg [15:0] reg_send;
+   /*always @ (posedge clk or posedge asnd_i) begin
+     if (asnd_i) begin
+        reg_send[15:0] = 16'b1100000000000000 | seq_tx_data[15:0];
+     end
+     else reg_send[15:0] = seq_tx_data[15:0];
+   end
+   assign seq_tx_data[15:0] = reg_send[15:0];*/
+   
+   reg reg_send2;
+   always @ (posedge clk or posedge asnd_i) begin
+     if (asnd_i)
+        reg_send2 = 1;
+     else 
+        reg_send2 = 0;
+   end
+   assign snd = reg_send2;
+        
+
+   // ===========================================================================
    // Asynchronous Reset
    // ===========================================================================
 
@@ -149,7 +175,8 @@ module nexys3 (/*AUTOARG*/
              /*AUTOINST*/
              // Inputs
              .clk                       (clk),
-             .rst                       (rst));
+             .rst                       (rst),
+             .snd                       (snd));
    
    // ===========================================================================
    // UART controller
